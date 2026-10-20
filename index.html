@@ -33,6 +33,8 @@
   --c-human: #D2557A;
   --c-civ: #C8901E;
   --c-tech: #7656D6;
+  --c-food: #148F77;
+  --c-myth: #A23BB8;
   --f-display: "Hahmlet", "Noto Serif KR", "AppleMyungjo", serif;
   --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
@@ -44,7 +46,7 @@
     --accent: #86A2FF; --on-accent: #0D131B;
     --bench: #1A2433; --bench-ink: #EEF2F6; --bench-muted: #9AA7B5; --bench-line: #33415A; --bench-slot: #222E40;
     --gold: #F1BD4B; --bad: #F2806B;
-    --c-base: #F2875B; --c-earth: #C79A6E; --c-sky: #5DB4E8; --c-life: #6CC482; --c-human: #EC85A4; --c-civ: #E7B54C; --c-tech: #A48BF0;
+    --c-base: #F2875B; --c-earth: #C79A6E; --c-sky: #5DB4E8; --c-life: #6CC482; --c-human: #EC85A4; --c-civ: #E7B54C; --c-tech: #A48BF0; --c-food: #3DD6BC; --c-myth: #D28BE6;
     color-scheme: dark;
   }
 }
@@ -53,7 +55,7 @@
   --accent: #86A2FF; --on-accent: #0D131B;
   --bench: #1A2433; --bench-ink: #EEF2F6; --bench-muted: #9AA7B5; --bench-line: #33415A; --bench-slot: #222E40;
   --gold: #F1BD4B; --bad: #F2806B;
-  --c-base: #F2875B; --c-earth: #C79A6E; --c-sky: #5DB4E8; --c-life: #6CC482; --c-human: #EC85A4; --c-civ: #E7B54C; --c-tech: #A48BF0;
+  --c-base: #F2875B; --c-earth: #C79A6E; --c-sky: #5DB4E8; --c-life: #6CC482; --c-human: #EC85A4; --c-civ: #E7B54C; --c-tech: #A48BF0; --c-food: #3DD6BC; --c-myth: #D28BE6;
   color-scheme: dark;
 }
 
@@ -263,7 +265,42 @@ button.slot:hover { border-color: var(--bench-muted); }
 }
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.search {
+  border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+  border-radius: 99px; padding: 6px 12px; font: inherit; font-size: 14px; width: 150px; min-width: 0;
+}
+.search::placeholder { color: var(--muted); }
+
+/* 업적 */
+.panel h2 .n { font-family: var(--f-mono); font-weight: 500; font-size: 13px; color: var(--muted); margin-left: 6px; }
+.ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 8px; }
+.ach {
+  position: relative; aspect-ratio: 1; border-radius: 12px; border: 1px solid var(--line); background: var(--bg);
+  display: grid; place-items: center; padding: 0; cursor: pointer; transition: transform .12s ease;
+}
+.ach .emo { font-family: var(--f-emoji); font-size: 22px; line-height: 1; }
+.ach:hover { transform: translateY(-2px); }
+.ach.on { background: color-mix(in oklab, var(--gold) 18%, var(--paper)); border-color: var(--gold); }
+.ach:not(.on) .emo { opacity: .35; filter: grayscale(1); }
+.ach[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--accent); }
+.ach-detail { margin: 0; font-size: 13px; color: var(--muted); min-height: 2.6em; }
+.ach-detail b { color: var(--ink); }
+.ach-detail .on { color: var(--gold); font-weight: 600; }
+
+/* 업적 알림 */
+.toast {
+  position: fixed; left: 50%; bottom: max(20px, env(safe-area-inset-bottom, 0px)); z-index: 30;
+  transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+  background: var(--bench); color: var(--bench-ink); border: 1px solid var(--gold); border-radius: 16px;
+  padding: 10px 18px 10px 14px; display: flex; align-items: center; gap: 12px; max-width: min(92vw, 420px);
+  box-shadow: 0 12px 30px -12px #0009, 0 0 0 4px color-mix(in oklab, var(--gold) 20%, transparent);
+  transition: transform .3s cubic-bezier(.2,1.3,.4,1), opacity .3s ease;
+}
+.toast.show { transform: translate(-50%, 0); opacity: 1; }
+.toast .emo { font-family: var(--f-emoji); font-size: 28px; line-height: 1; }
+.toast b { display: block; font-size: 11px; letter-spacing: .12em; color: var(--gold); font-weight: 600; }
+.toast span { font-size: 14px; font-weight: 500; }
 
 /* 가로로 눕힌 휴대폰처럼 낮은 화면 */
 @media (max-height: 520px) {
@@ -281,6 +318,7 @@ button.slot:hover { border-color: var(--bench-muted); }
 }
 @media (max-width: 640px) {
   .wrap { padding-block: 18px 40px; gap: 16px; }
+  .search { width: 100%; }
   .bench { grid-template-columns: minmax(0, 1fr); padding: 14px 12px 12px; gap: 10px; border-radius: 18px; }
   .bench-title { display: none; }
   .bench-side { flex-direction: row; justify-content: center; }
@@ -305,7 +343,7 @@ button.slot:hover { border-color: var(--bench-muted); }
     <div class="top-right">
     <div class="progress">
       <div class="progress-row">
-        <span class="count"><span id="foundCount">4</span><small> / <span id="totalCount">76</span></small></span>
+        <span class="count"><span id="foundCount">4</span><small> / <span id="totalCount">206</span></small></span>
         <span class="progress-label" id="progressLabel">발견한 원소</span>
       </div>
       <div class="bar"><i id="progressBar"></i></div>
@@ -343,6 +381,7 @@ button.slot:hover { border-color: var(--bench-muted); }
       <div class="shelf-head">
         <div class="tabs" id="tabs" role="group" aria-label="분류"></div>
         <div class="toggles">
+          <input class="search" id="search" type="search" placeholder="원소 찾기" aria-label="원소 이름으로 찾기" autocomplete="off">
           <label class="toggle" for="hideDone"><input type="checkbox" id="hideDone"> 다 쓴 원소 숨기기</label>
           <label class="toggle" for="showCards"><input type="checkbox" id="showCards" checked> 발견 카드 보기</label>
         </div>
@@ -354,6 +393,11 @@ button.slot:hover { border-color: var(--bench-muted); }
       <div class="panel">
         <h2>최근 발견</h2>
         <ol class="log" id="log"></ol>
+      </div>
+      <div class="panel">
+        <h2>업적<span class="n" id="achCount"></span></h2>
+        <div class="ach-grid" id="achGrid" role="group" aria-label="업적"></div>
+        <p class="ach-detail" id="achDetail">업적을 누르면 조건이 보여요.</p>
       </div>
       <div class="panel">
         <h2>분류별 진행</h2>
@@ -374,6 +418,8 @@ button.slot:hover { border-color: var(--bench-muted); }
   </main>
 </div>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <div class="reveal" id="reveal" hidden role="dialog" aria-modal="true" aria-labelledby="rName" aria-describedby="rDesc">
   <div class="reveal-card">
     <div class="r-orb"><span class="emo" id="rEmo"></span></div>
@@ -392,7 +438,7 @@ button.slot:hover { border-color: var(--bench-muted); }
   function own(o, k) { return typeof k === "string" && Object.prototype.hasOwnProperty.call(o, k); }
 
   /* ---------- 데이터 ---------- */
-  var CATS = { base: "원소", earth: "대지", sky: "하늘", life: "생명", human: "인간", civ: "문명", tech: "기술" };
+  var CATS = { base: "원소", earth: "대지", sky: "하늘", life: "생명", human: "인간", food: "음식", civ: "문명", tech: "기술", myth: "전설" };
   var CAT_ORDER = Object.keys(CATS);
 
   var ELEMENT_DATA = [
@@ -403,17 +449,30 @@ button.slot:hover { border-color: var(--bench-muted); }
     "에너지|✨|base|불이 공기를 만나 일렁이는 힘.",
     "진흙|🟤|earth|물에 젖은 흙. 무엇이든 빚을 수 있다.",
     "용암|🌋|earth|녹아내린 대지의 피.",
+    "화산|🗻|earth|산이 속을 참지 못하고 터뜨린다.",
     "돌|🪨|earth|식어서 굳은 용암.",
     "모래|🏖️|earth|바람이 오래도록 깎아낸 돌.",
     "산|⛰️|earth|돌 위에 돌이 쌓이고 또 쌓였다.",
+    "강|🏞️|earth|산에서 바다로, 쉬지 않고 달린다.",
+    "동굴|🕳️|earth|산이 품은 어둡고 서늘한 방.",
     "빙하|🏔️|earth|수천 년 동안 쌓인 얼음의 산.",
     "금속|🔩|earth|돌 속에 숨어 있던 반짝임.",
+    "금|🪙|earth|녹슬지 않는 노란 금속. 모두가 탐낸다.",
+    "보석|💎|earth|땅속 깊은 곳에서 오래 눌린 빛.",
+    "석탄|⚫|earth|숲이 땅속에 묻혀 검게 굳었다.",
+    "석유|🛢️|earth|아주 오래된 생명이 남긴 검은 기름.",
+    "숯|🪵|earth|불이 지나간 나무. 까맣지만 쓸모가 많다.",
+    "소금|🧂|earth|바다가 햇볕에 말라 남긴 하얀 알갱이.",
     "유리|🪟|earth|불에 녹은 모래가 투명해졌다.",
     "벽돌|🧱|earth|불에 구워 단단해진 진흙.",
     "사막|🏜️|earth|끝없이 펼쳐진 모래의 바다.",
+    "초원|🌿|earth|풀이 끝없이 이어지는 너른 들.",
     "섬|🏝️|earth|바다 한가운데 솟아오른 땅.",
     "늪|🪷|earth|생명이 꿈틀대기 좋은 질척한 곳.",
     "바다|🌊|earth|물이 모이고 모여 생긴 거대한 품.",
+    "조개|🐚|earth|바닷가 모래 속에 숨은 단단한 껍질.",
+    "진주|⚪|earth|조개가 오랜 시간 품어 만든 동그란 빛.",
+    "화석|🦴|earth|돌이 되어 남은 아주 오래된 생명.",
     "증기|♨️|sky|불에 놀란 물이 날아오른다.",
     "안개|🌫️|sky|땅 가까이 내려앉은 낮은 구름.",
     "바람|🌬️|sky|공기가 움직이기 시작했다.",
@@ -421,15 +480,23 @@ button.slot:hover { border-color: var(--bench-muted); }
     "구름|☁️|sky|하늘을 떠도는 증기.",
     "하늘|🌤️|sky|구름이 머무는 높고 넓은 곳.",
     "태양|☀️|sky|하늘에 걸린 거대한 불.",
+    "노을|🌅|sky|해가 저물며 하늘을 물들인다.",
+    "밤|🌃|sky|해가 떠난 뒤의 고요한 어둠.",
     "달|🌙|sky|밤하늘을 지키는 커다란 돌.",
     "별|⭐|sky|하늘에 흩뿌려진 빛의 알갱이.",
+    "유성|☄️|sky|떨어지는 별. 소원을 빌 시간은 1초.",
+    "우주|🪐|sky|하늘 너머의 끝없는 어둠.",
     "은하|🌌|sky|별들이 모여 흐르는 빛의 강.",
     "번개|⚡|sky|구름 속에서 터져 나온 힘.",
+    "소리|🔊|sky|공기가 떨리면 귀에 닿는다.",
     "폭풍|⛈️|sky|비와 바람이 함께 몰아친다.",
     "태풍|🌀|sky|바다에서 힘을 얻은 거대한 소용돌이.",
     "무지개|🌈|sky|비 갠 뒤 햇빛이 남긴 선물.",
-    "얼음|🧊|sky|차가운 바람에 멈춰버린 물.",
+    "추위|🥶|sky|산을 넘어온 바람이 뼛속까지 파고든다.",
+    "얼음|🧊|sky|추위에 멈춰버린 물.",
     "눈|❄️|sky|구름에서 내려오는 얼음 꽃.",
+    "우박|🌨️|sky|폭풍이 던지는 얼음 구슬.",
+    "이슬|💦|sky|새벽 풀잎에 맺힌 작은 물방울.",
     "생명|🧬|life|에너지가 깃들자 무언가 살아 움직인다!",
     "박테리아|🦠|life|아주 작지만 어디에나 있는 생명.",
     "식물|🌱|life|흙에 뿌리내린 생명.",
@@ -438,96 +505,367 @@ button.slot:hover { border-color: var(--bench-muted); }
     "꽃|🌸|life|햇빛을 받아 피어난 색.",
     "버섯|🍄|life|축축한 곳을 좋아하는 이상한 친구.",
     "선인장|🌵|life|사막에서도 버티는 가시투성이.",
+    "산호|🪸|life|바다 밑에 피는 돌 같은 꽃.",
     "곤충|🐛|life|작은 생명이 흙과 풀 사이를 기어 다닌다.",
+    "개미|🐜|life|작지만 함께라면 산도 옮긴다.",
+    "나비|🦋|life|꽃잎처럼 가벼운 날개.",
+    "거미|🕷️|life|실을 뽑아 집을 짓는 여덟 다리.",
     "벌|🐝|life|꽃을 찾아 바쁘게 날아다닌다.",
     "꿀|🍯|life|벌이 모아 온 달콤함.",
     "물고기|🐟|life|바다에서 처음 헤엄친 생명.",
+    "상어|🦈|life|바다에서 가장 날카로운 이빨.",
+    "문어|🐙|life|다리 여덟 개로 바다 밑을 걷는다.",
+    "게|🦀|life|옆으로 걷는 모래밭의 갑옷 기사.",
+    "돌고래|🐬|life|웃는 얼굴로 파도를 타는 바다 친구.",
+    "고래|🐋|life|바다로 돌아간 짐승.",
     "개구리|🐸|life|늪에서 노래하는 물과 뭍의 경계인.",
     "도마뱀|🦎|life|물고기가 뭍으로 올라왔다.",
+    "뱀|🐍|life|다리를 버리고 모래 위를 미끄러진다.",
+    "거북|🐢|life|집을 등에 지고 느긋하게 간다.",
     "새|🐦|life|하늘을 차지한 생명.",
+    "오리|🦆|life|물 위를 떠다니는 새.",
     "펭귄|🐧|life|하늘 대신 얼음 바다를 고른 새.",
+    "부엉이|🦉|life|밤의 숲을 지키는 조용한 눈.",
+    "독수리|🦅|life|산꼭대기에서 세상을 내려다본다.",
+    "박쥐|🦇|life|어둠 속을 소리로 보는 날짐승.",
+    "닭|🐔|life|아침을 알리는 농장의 새.",
     "알|🥚|life|새로운 생명이 담긴 껍질.",
     "공룡|🦖|life|뜨거운 시대를 지배한 거대한 도마뱀.",
     "짐승|🐺|life|숲을 누비는 털 달린 생명.",
     "개|🐕|life|인간의 가장 오랜 친구.",
-    "고래|🐋|life|바다로 돌아간 짐승.",
+    "고양이|🐈|life|집에 들어와 주인 노릇을 한다.",
+    "쥐|🐭|life|어디든 숨어들어 빵 부스러기를 노린다.",
+    "토끼|🐰|life|달에서 떡방아를 찧는다는 그 친구.",
+    "말|🐎|life|바람보다 빨리 초원을 달린다.",
+    "소|🐄|life|농부와 함께 밭을 가는 든든한 친구.",
+    "양|🐑|life|구름을 닮은 털옷을 입었다.",
+    "돼지|🐖|life|진흙 목욕을 가장 좋아한다.",
+    "곰|🐻|life|꿀을 위해서라면 벌도 무섭지 않다.",
+    "사자|🦁|life|태양 아래 초원의 왕.",
+    "원숭이|🐒|life|나무 위에서 인간을 내려다본다.",
     "낙타|🐫|life|사막을 건너는 법을 배웠다.",
     "인간|🧑|human|불을 다루고 진흙에서 깨어난 존재.",
+    "아이|👶|human|사랑이 시간을 만나 태어난 작은 사람.",
+    "노인|🧓|human|시간이 사람에게 남긴 지혜.",
     "사랑|💗|human|누군가를 아끼는 마음.",
     "가족|👨‍👩‍👧|human|사랑이 모여 이룬 작은 울타리.",
     "눈사람|⛄|human|겨울이면 나타나는 하얀 친구.",
     "도구|🔨|human|돌을 쥔 손이 세상을 바꾼다.",
     "농부|🧑‍🌾|human|땅을 일구는 사람.",
-    "밀|🌾|civ|도구로 일군 첫 번째 곡식.",
-    "빵|🍞|civ|불에 구운 밀. 고소한 냄새가 난다.",
+    "사냥꾼|🏹|human|숲을 읽고 짐승을 쫓는 사람.",
+    "어부|🎣|human|바다와 흥정하는 사람.",
+    "광부|⛏️|human|땅속의 반짝임을 캐내는 사람.",
+    "학자|🧑‍🔬|human|책 속에서 세상을 읽는 사람.",
+    "의사|🩺|human|아픈 곳을 고치는 사람.",
+    "왕|🤴|human|금관을 쓰고 도시를 다스린다.",
+    "전사|⚔️|human|칼을 든 사람.",
+    "글자|🔤|human|말을 붙잡아 두는 작은 그림.",
+    "그림|🖼️|human|눈에 담은 것을 손으로 옮겼다.",
+    "음악|🎵|human|소리에 마음을 담았다.",
+    "밀|🌾|food|밭에서 거둔 첫 번째 곡식.",
+    "빵|🍞|food|불에 구운 밀. 고소한 냄새가 난다.",
+    "쌀|🍚|food|물을 가득 댄 논에서 자란 하얀 알갱이.",
+    "밥|🍙|food|쌀을 익혔다. 모든 식탁의 시작.",
+    "떡|🍡|food|쌀을 쳐서 쫄깃하게 빚었다.",
+    "국수|🍜|food|밀을 길게 뽑았다. 후루룩.",
+    "라면|🍲|food|기계가 뽑아낸 꼬불꼬불한 국수.",
+    "김치|🥬|food|소금에 절여 항아리에서 익힌 한국의 맛.",
+    "우유|🥛|food|소가 나눠 준 하얀 선물.",
+    "치즈|🧀|food|시간이 우유를 단단하게 바꿨다.",
+    "고기|🍖|food|사냥꾼이 가져온 저녁.",
+    "과일|🍎|food|꽃이 진 자리에 맺힌 달콤함.",
+    "술|🍶|food|시간이 과일을 취하게 만들었다.",
+    "차|🍵|food|잎에 뜨거운 김을 쐬니 향이 난다.",
+    "밭|🚜|civ|도구로 갈아엎은 땅. 곧 싹이 튼다.",
     "집|🏠|civ|벽돌을 쌓아 만든 보금자리.",
+    "농장|🏡|civ|밭과 집과 닭이 한데 모였다.",
     "마을|🏘️|civ|집과 집이 모여 이웃이 생겼다.",
     "도시|🏙️|civ|마을이 커져 불이 꺼지지 않는 곳.",
+    "성|🏰|civ|왕이 사는 돌의 집.",
+    "시장|🏪|civ|돈과 물건이 만나는 떠들썩한 곳.",
+    "학교|🏫|civ|아이가 책을 만나는 곳.",
+    "병원|🏥|civ|의사가 기다리는 집.",
+    "도로|🛣️|civ|바퀴가 지나간 자리에 길이 생겼다.",
+    "다리|🌉|civ|강 위에 걸어 놓은 길.",
     "바퀴|🛞|civ|굴러가는 돌. 위대한 발명.",
+    "수레|🛒|civ|바퀴 위에 짐을 얹었다.",
+    "자전거|🚲|civ|바퀴 두 개와 다리 두 개.",
     "배|⛵|civ|바다를 건너게 해 준 도구.",
+    "지도|🗺️|civ|종이 위에 옮긴 세상.",
+    "나침반|🧭|civ|별 대신 바늘이 길을 알려 준다.",
+    "항아리|🏺|civ|진흙으로 빚은 둥근 배. 뭐든 담는다.",
+    "등불|🏮|civ|불을 가둬 밤을 밝힌다.",
+    "실|🧵|civ|양털을 길게 꼬았다.",
+    "옷|👕|civ|실로 짠 두 번째 피부.",
+    "칼|🗡️|civ|금속을 얇고 날카롭게 벼렸다.",
+    "약|💊|civ|학자가 풀에서 찾아낸 낫는 법.",
     "종이|📜|civ|나무를 얇게 펴서 만든 기억 저장소.",
-    "책|📖|civ|사람의 생각을 종이에 담았다.",
+    "책|📖|civ|글자를 종이에 묶었다.",
     "도서관|🏛️|civ|책과 책이 모여 생각의 숲이 되었다.",
     "시간|⏳|civ|유리 속을 흐르는 모래.",
+    "시계|⏰|civ|기계가 시간을 똑딱똑딱 센다.",
+    "달력|📅|civ|달이 차고 기우는 것을 종이에 적었다.",
+    "돈|💰|civ|금을 작게 쪼개 약속으로 바꿨다.",
     "돋보기|🔍|civ|햇빛을 한 점에 모으는 유리.",
     "망원경|🔭|civ|별을 가까이 끌어당기는 유리.",
+    "안경|👓|civ|흐릿한 세상이 또렷해졌다.",
+    "거울|🪞|civ|유리 뒤에 금속을 발랐더니 내가 보인다.",
+    "화약|🧨|civ|숯과 소금이 만나 불을 품었다.",
+    "불꽃놀이|🎆|civ|화약이 밤하늘에 꽃을 피운다.",
+    "축제|🎉|civ|마을 전체가 춤추는 날.",
     "기계|⚙️|tech|금속에 에너지를 불어넣었다.",
+    "공장|🏭|tech|기계가 기계를 만드는 집.",
     "기차|🚂|tech|증기로 달리는 철마.",
+    "지하철|🚇|tech|도시 밑을 달리는 기차.",
     "증기선|🚢|tech|돛 없이 바다를 건너는 배.",
     "자동차|🚗|tech|바퀴 달린 기계.",
+    "버스|🚌|tech|마을 사람을 한꺼번에 태우는 자동차.",
+    "오토바이|🏍️|tech|자전거에 기계 심장을 달았다.",
     "비행기|✈️|tech|새를 흉내 낸 기계.",
+    "헬리콥터|🚁|tech|잠자리를 흉내 낸 기계.",
     "로켓|🚀|tech|불을 뿜으며 별을 향해.",
+    "인공위성|🛰️|tech|지구 둘레를 도는 금속 별.",
     "우주인|🧑‍🚀|tech|달에 첫 발자국을 남긴 인간.",
     "전기|🔌|tech|금속을 타고 흐르는 번개.",
+    "배터리|🔋|tech|전기를 가둬 두는 작은 상자.",
     "전구|💡|tech|유리 속에 가둔 전기.",
+    "전화|📞|tech|전기에 실린 목소리.",
+    "라디오|📻|tech|전기에 실린 음악.",
+    "텔레비전|📺|tech|소리에 그림이 붙었다.",
+    "카메라|📷|tech|유리가 순간을 붙잡는다.",
+    "영화|🎬|tech|사진이 시간을 따라 움직인다.",
     "컴퓨터|💻|tech|책 수백만 권을 기억하는 기계.",
     "인터넷|🌐|tech|컴퓨터와 컴퓨터를 잇는 거대한 그물.",
+    "스마트폰|📱|tech|주머니 속의 컴퓨터.",
+    "게임|🎮|tech|컴퓨터가 아이와 놀기 시작했다.",
     "로봇|🤖|tech|스스로 움직이는 기계.",
-    "인공지능|🧠|tech|그물 속에서 깨어난 새로운 생각."
+    "인공지능|🧠|tech|그물 속에서 깨어난 새로운 생각.",
+    "용|🐉|myth|구름을 타고 오르는 뱀의 왕.",
+    "도깨비|👹|myth|밤에 방망이를 들고 나타나는 장난꾸러기.",
+    "인어|🧜|myth|반은 사람, 반은 물고기.",
+    "유령|👻|myth|안개처럼 떠도는 사람의 그림자.",
+    "거인|🗿|myth|산만큼 커다란 사람.",
+    "요정|🧚|myth|꽃 속에 숨어 사는 작은 날개.",
+    "마법|🪄|myth|책에 적힌 별의 힘.",
+    "마법사|🧙|myth|마법을 다루는 사람."
   ];
 
   // 같은 결과를 내는 레시피가 여러 개면 처음 것이 기본 레시피다.
   var RECIPE_DATA = [
-    // 원소와 대지
-    "불+물=증기", "물+흙=진흙", "비+흙=진흙", "불+흙=용암", "불+공기=에너지", "불+불=에너지",
-    "물+물=바다", "공기+공기=바람", "물+공기=비", "얼음+불=물", "얼음+태양=물",
-    "용암+물=돌", "돌+바람=모래", "흙+공기=모래", "바람+흙=모래", "돌+돌=산", "흙+흙=산",
-    "눈+산=빙하", "얼음+산=빙하", "얼음+얼음=빙하",
-    "돌+불=금속", "모래+불=유리", "진흙+불=벽돌", "모래+모래=사막", "모래+태양=사막",
-    "바다+용암=섬", "진흙+물=늪",
-    // 하늘
-    "증기+공기=구름", "증기+물=안개", "구름+흙=안개",
-    "구름+공기=하늘", "구름+구름=하늘", "구름+바람=하늘",
-    "하늘+불=태양", "하늘+돌=달", "하늘+에너지=별", "별+별=은하", "하늘+별=은하",
-    "구름+에너지=번개", "비+바람=폭풍", "바람+바람=폭풍", "폭풍+바다=태풍", "바다+바람=태풍",
-    "비+태양=무지개", "물+바람=얼음", "얼음+구름=눈",
-    // 생명
-    "늪+에너지=생명", "진흙+번개=생명", "바다+번개=생명", "바다+전기=생명",
-    "생명+늪=박테리아", "생명+흙=식물", "식물+흙=나무", "식물+물=나무", "식물+비=나무", "나무+나무=숲",
-    "식물+태양=꽃", "식물+늪=버섯", "식물+사막=선인장",
-    "박테리아+흙=곤충", "박테리아+식물=곤충", "곤충+꽃=벌", "벌+꽃=꿀",
-    "생명+바다=물고기", "물고기+늪=개구리", "물고기+흙=도마뱀",
-    "도마뱀+공기=새", "생명+공기=새", "새+얼음=펭귄", "새+새=알",
-    "도마뱀+용암=공룡", "알+도마뱀=공룡",
-    "도마뱀+숲=짐승", "짐승+바다=고래", "짐승+사막=낙타", "인간+짐승=개",
-    // 인간
-    "짐승+불=인간", "생명+진흙=인간",
-    "인간+꽃=사랑", "인간+인간=사랑", "사랑+인간=가족", "사랑+집=가족",
-    "인간+눈=눈사람", "인간+돌=도구", "인간+밀=농부", "인간+식물=농부",
-    // 문명
-    "식물+도구=밀", "도구+흙=밀", "밀+불=빵",
+    // 원소,
+    "불+공기=에너지", "불+불=에너지",
+    // 대지,
+    "물+흙=진흙", "비+흙=진흙", "모래+물=진흙",
+    "불+흙=용암", "에너지+흙=용암",
+    "산+불=화산", "산+용암=화산",
+    "용암+물=돌", "용암+공기=돌", "용암+시간=돌",
+    "돌+바람=모래", "돌+물=모래", "돌+시간=모래",
+    "돌+돌=산", "흙+흙=산", "돌+흙=산",
+    "비+산=강", "빙하+태양=강", "폭풍+산=강",
+    "산+물=동굴", "산+시간=동굴",
+    "얼음+산=빙하", "눈+산=빙하", "얼음+얼음=빙하", "얼음+바다=빙하", "눈+시간=빙하",
+    "돌+불=금속", "불+도구=금속", "광부+돌=금속",
+    "금속+태양=금", "강+모래=금", "광부+강=금",
+    "석탄+시간=보석", "석탄+산=보석", "광부+시간=보석",
+    "숲+시간=석탄", "숯+시간=석탄", "숲+돌=석탄",
+    "화석+시간=석유", "화석+바다=석유", "공룡+늪=석유",
+    "나무+불=숯", "숲+불=숯",
+    "바다+불=소금", "바다+시간=소금", "바다+사막=소금",
+    "모래+불=유리", "모래+번개=유리", "모래+에너지=유리",
+    "진흙+불=벽돌", "진흙+태양=벽돌",
+    "모래+모래=사막", "모래+태양=사막", "사막+바람=사막",
+    "식물+식물=초원", "식물+바람=초원", "초원+비=초원",
+    "바다+용암=섬", "바다+화산=섬", "바다+산=섬",
+    "진흙+물=늪", "진흙+비=늪", "강+흙=늪",
+    "물+물=바다", "강+강=바다", "물+소금=바다",
+    // 원소,
+    "얼음+불=물", "얼음+태양=물", "눈+불=물", "눈+태양=물", "눈사람+불=물", "눈사람+태양=물",
+    // 대지,
+    "바다+모래=조개", "바다+돌=조개", "바다+알=조개",
+    "조개+시간=진주", "조개+모래=진주", "조개+달=진주",
+    "공룡+시간=화석", "공룡+돌=화석", "공룡+흙=화석",
+    // 하늘,
+    "불+물=증기", "물+에너지=증기", "물+태양=증기",
+    "증기+물=안개", "증기+흙=안개", "구름+바다=안개", "구름+강=안개",
+    "공기+공기=바람", "공기+에너지=바람",
+    "물+공기=비", "구름+구름=비", "구름+물=비",
+    "증기+공기=구름", "증기+하늘=구름", "안개+바람=구름",
+    "구름+공기=하늘", "안개+태양=하늘",
+    "하늘+불=태양", "별+불=태양",
+    "태양+바다=노을", "태양+구름=노을",
+    "하늘+시간=밤", "노을+시간=밤",
+    "밤+돌=달", "우주+돌=달",
+    "하늘+에너지=별", "밤+에너지=별", "우주+불=별",
+    "별+돌=유성", "별+바람=유성",
+    "하늘+하늘=우주", "밤+밤=우주", "로켓+하늘=우주", "은하+은하=우주",
+    "별+별=은하", "우주+별=은하",
+    "구름+에너지=번개", "구름+불=번개", "폭풍+에너지=번개", "구름+폭풍=번개",
+    "번개+공기=소리", "바람+동굴=소리",
+    "비+바람=폭풍", "바람+바람=폭풍", "구름+바람=폭풍",
+    "폭풍+바다=태풍", "바다+바람=태풍", "폭풍+폭풍=태풍",
+    "비+태양=무지개", "폭풍+태양=무지개",
+    "바람+산=추위", "바람+밤=추위", "바람+빙하=추위",
+    "물+추위=얼음", "물+밤=얼음", "물+눈=얼음", "눈사람+밤=얼음",
+    "얼음+구름=눈", "구름+추위=눈", "비+추위=눈",
+    "얼음+폭풍=우박", "얼음+비=우박",
+    "안개+식물=이슬", "안개+꽃=이슬", "물+초원=이슬",
+    // 생명,
+    "늪+에너지=생명", "진흙+번개=생명", "바다+번개=생명", "늪+번개=생명",
+    "생명+늪=박테리아", "생명+물=박테리아",
+    "생명+흙=식물", "생명+비=식물",
+    "식물+흙=나무", "식물+시간=나무", "식물+물=나무",
+    "나무+나무=숲", "나무+초원=숲", "나무+시간=숲",
+    "식물+태양=꽃", "식물+무지개=꽃", "식물+사랑=꽃",
+    "식물+늪=버섯", "식물+동굴=버섯", "나무+비=버섯",
+    "식물+사막=선인장", "식물+모래=선인장",
+    "바다+꽃=산호", "바다+식물=산호",
+    "생명+식물=곤충", "생명+초원=곤충",
+    "곤충+흙=개미", "곤충+모래=개미",
+    "곤충+무지개=나비", "곤충+바람=나비",
+    "곤충+동굴=거미", "곤충+집=거미",
+    "곤충+꽃=벌", "곤충+꿀=벌", "꽃+꽃=벌",
+    "벌+꽃=꿀", "벌+집=꿀", "벌+나무=꿀", "곰+벌=꿀",
+    "생명+바다=물고기", "생명+강=물고기", "알+물=물고기",
+    "물고기+짐승=상어", "물고기+바다=상어",
+    "거미+바다=문어", "물고기+거미=문어",
+    "거미+모래=게", "조개+거미=게", "조개+곤충=게",
+    "고래+물고기=돌고래", "고래+사랑=돌고래",
+    "짐승+바다=고래", "물고기+거인=고래",
+    "물고기+늪=개구리", "알+늪=개구리",
+    "물고기+흙=도마뱀", "개구리+시간=도마뱀",
+    "도마뱀+사막=뱀", "도마뱀+모래=뱀",
+    "도마뱀+바다=거북", "도마뱀+조개=거북", "도마뱀+돌=거북",
+    "도마뱀+하늘=새", "생명+하늘=새", "공룡+공기=새",
+    "새+물=오리", "새+강=오리", "새+늪=오리",
+    "새+얼음=펭귄", "새+빙하=펭귄",
+    "새+밤=부엉이", "새+책=부엉이", "새+달=부엉이",
+    "새+산=독수리", "새+태양=독수리",
+    "새+동굴=박쥐", "쥐+공기=박쥐",
+    "새+농부=닭", "새+농장=닭", "알+농부=닭",
+    "새+새=알", "닭+닭=알", "새+나무=알", "오리+오리=알",
+    "알+도마뱀=공룡", "도마뱀+도마뱀=공룡", "도마뱀+시간=공룡",
+    "생명+숲=짐승", "공룡+유성=짐승",
+    "인간+짐승=개", "짐승+가족=개", "짐승+사랑=개",
+    "짐승+집=고양이", "짐승+쥐=고양이",
+    "짐승+빵=쥐", "짐승+도시=쥐", "짐승+치즈=쥐",
+    "짐승+달=토끼", "짐승+눈=토끼",
+    "짐승+바람=말", "짐승+초원=말",
+    "짐승+농부=소", "짐승+밀=소", "짐승+밭=소",
+    "짐승+구름=양", "짐승+산=양",
+    "짐승+진흙=돼지", "짐승+늪=돼지",
+    "짐승+꿀=곰", "짐승+동굴=곰",
+    "짐승+태양=사자", "짐승+왕=사자",
+    "짐승+나무=원숭이", "짐승+과일=원숭이",
+    "짐승+사막=낙타", "말+사막=낙타",
+    // 인간,
+    "생명+진흙=인간", "원숭이+불=인간", "원숭이+도구=인간", "원숭이+시간=인간",
+    "사랑+시간=아이", "가족+사랑=아이",
+    "인간+시간=노인", "아이+시간=노인",
+    "인간+꽃=사랑", "인간+인간=사랑", "인간+음악=사랑",
+    "사랑+인간=가족", "사랑+집=가족", "사랑+아이=가족", "인간+아이=가족",
+    "인간+눈=눈사람", "눈+눈=눈사람", "눈+아이=눈사람",
+    "인간+돌=도구", "나무+돌=도구", "원숭이+돌=도구",
+    "인간+밀=농부", "인간+식물=농부", "인간+밭=농부", "인간+흙=농부",
+    "도구+짐승=사냥꾼", "도구+숲=사냥꾼", "인간+숲=사냥꾼",
+    "인간+물고기=어부", "인간+바다=어부", "배+물고기=어부", "인간+강=어부",
+    "인간+동굴=광부", "도구+동굴=광부", "도구+산=광부", "인간+석탄=광부",
+    "인간+책=학자", "인간+도서관=학자", "인간+망원경=학자",
+    "인간+약=의사", "학자+약=의사",
+    "인간+금=왕", "인간+도시=왕", "인간+보석=왕",
+    "인간+칼=전사", "사냥꾼+칼=전사",
+    "인간+종이=글자", "도구+종이=글자", "숯+인간=글자",
+    "인간+무지개=그림", "종이+무지개=그림", "숯+종이=그림", "숯+동굴=그림",
+    "인간+소리=음악", "인간+새=음악", "소리+사랑=음악",
+    // 음식,
+    "밭+식물=밀", "밭+시간=밀", "농부+밭=밀", "농부+식물=밀",
+    "밀+불=빵", "밀+에너지=빵",
+    "농부+늪=쌀", "농부+비=쌀", "밭+물=쌀", "밭+비=쌀",
+    "쌀+불=밥", "쌀+물=밥", "쌀+증기=밥",
+    "쌀+도구=떡", "밥+도구=떡", "토끼+달=떡",
+    "밀+물=국수", "밀+도구=국수", "밀+칼=국수",
+    "국수+불=라면", "국수+기계=라면", "국수+공장=라면",
+    "소금+식물=김치", "소금+항아리=김치", "식물+항아리=김치",
+    "소+인간=우유", "소+농부=우유", "소+아이=우유", "소+항아리=우유",
+    "우유+시간=치즈", "우유+박테리아=치즈", "우유+소금=치즈",
+    "짐승+칼=고기", "짐승+사냥꾼=고기", "사냥꾼+숲=고기",
+    "나무+꽃=과일", "나무+태양=과일", "꽃+시간=과일",
+    "과일+시간=술", "쌀+박테리아=술", "과일+박테리아=술", "쌀+시간=술",
+    "식물+증기=차", "꽃+증기=차",
+    // 문명,
+    "도구+흙=밭", "농부+흙=밭",
     "벽돌+도구=집", "인간+벽돌=집", "인간+나무=집",
-    "집+집=마을", "가족+집=마을", "마을+마을=도시",
-    "돌+도구=바퀴", "도구+바다=배", "나무+도구=종이", "종이+인간=책", "책+책=도서관",
-    "모래+유리=시간", "유리+태양=돋보기", "유리+별=망원경",
-    // 기술
-    "금속+에너지=기계", "증기+금속=기계",
-    "기계+증기=기차", "증기+바퀴=기차", "배+증기=증기선", "배+기계=증기선",
-    "기계+바퀴=자동차", "기계+새=비행기", "하늘+배=비행기",
-    "비행기+불=로켓", "비행기+하늘=로켓", "비행기+별=로켓", "로켓+달=우주인", "인간+로켓=우주인",
-    "금속+번개=전기", "전기+유리=전구", "전기+집=전구",
-    "전기+책=컴퓨터", "기계+책=컴퓨터", "컴퓨터+컴퓨터=인터넷", "도서관+컴퓨터=인터넷",
-    "기계+컴퓨터=로봇", "인터넷+로봇=인공지능"
+    "농부+집=농장", "밭+집=농장", "닭+집=농장",
+    "집+집=마을", "가족+집=마을", "가족+가족=마을", "섬+인간=마을",
+    "마을+마을=도시", "마을+시간=도시", "마을+전기=도시", "마을+도로=도시",
+    "집+왕=성", "벽돌+왕=성", "돌+왕=성", "집+전사=성",
+    "돈+마을=시장", "마을+빵=시장", "돈+도시=시장",
+    "책+아이=학교", "학자+아이=학교", "학자+집=학교",
+    "의사+집=병원", "의사+도시=병원", "약+집=병원",
+    "돌+바퀴=도로", "바퀴+흙=도로", "돌+마을=도로", "자동차+흙=도로",
+    "도로+강=다리", "나무+강=다리", "돌+강=다리",
+    "돌+도구=바퀴", "도구+도로=바퀴",
+    "바퀴+나무=수레", "바퀴+소=수레", "바퀴+말=수레",
+    "바퀴+바퀴=자전거", "바퀴+인간=자전거", "수레+인간=자전거",
+    "나무+바다=배", "도구+바다=배", "도구+강=배",
+    "종이+섬=지도", "종이+바다=지도", "종이+산=지도", "배+종이=지도", "종이+도로=지도",
+    "금속+별=나침반", "배+별=나침반", "금속+배=나침반",
+    "진흙+도구=항아리", "진흙+인간=항아리",
+    "불+유리=등불", "불+종이=등불", "불+항아리=등불",
+    "양+도구=실", "거미+도구=실", "양+인간=실",
+    "실+도구=옷", "실+인간=옷", "실+실=옷",
+    "금속+도구=칼", "금속+인간=칼",
+    "식물+박테리아=약", "식물+학자=약", "버섯+학자=약",
+    "나무+도구=종이", "나무+칼=종이",
+    "글자+종이=책", "글자+시간=책", "글자+학자=책",
+    "책+책=도서관", "책+집=도서관", "책+도시=도서관", "책+마을=도서관",
+    "모래+유리=시간", "태양+달=시간",
+    "시간+기계=시계", "시간+금속=시계", "시간+전기=시계",
+    "시간+종이=달력", "시간+달=달력", "달+종이=달력",
+    "금+도구=돈", "금+왕=돈", "금+종이=돈",
+    "유리+태양=돋보기", "유리+도구=돋보기",
+    "유리+별=망원경", "유리+유리=망원경", "돋보기+별=망원경", "돋보기+돋보기=망원경",
+    "돋보기+인간=안경", "유리+인간=안경", "유리+학자=안경",
+    "유리+금속=거울", "유리+달=거울",
+    "숯+소금=화약", "숯+에너지=화약",
+    "화약+하늘=불꽃놀이", "화약+별=불꽃놀이", "화약+축제=불꽃놀이", "화약+밤=불꽃놀이",
+    "마을+음악=축제", "마을+사랑=축제", "도시+음악=축제", "마을+술=축제",
+    // 기술,
+    "금속+에너지=기계", "증기+금속=기계", "도구+도구=기계", "도구+에너지=기계",
+    "기계+집=공장", "기계+도시=공장", "기계+기계=공장",
+    "기계+증기=기차", "증기+바퀴=기차", "증기+수레=기차",
+    "기차+도시=지하철", "기차+동굴=지하철", "기차+전기=지하철",
+    "배+증기=증기선", "배+기계=증기선",
+    "기계+바퀴=자동차", "기계+도로=자동차", "기계+수레=자동차", "석유+수레=자동차",
+    "자동차+도시=버스", "자동차+마을=버스", "자동차+가족=버스",
+    "자전거+기계=오토바이", "자전거+석유=오토바이", "자전거+전기=오토바이",
+    "기계+새=비행기", "기계+하늘=비행기", "인간+하늘=비행기", "자동차+새=비행기",
+    "비행기+곤충=헬리콥터", "기계+곤충=헬리콥터", "비행기+도시=헬리콥터",
+    "비행기+불=로켓", "비행기+별=로켓", "비행기+우주=로켓", "화약+비행기=로켓",
+    "로켓+금속=인공위성", "로켓+전화=인공위성", "우주+기계=인공위성",
+    "로켓+인간=우주인", "로켓+달=우주인", "인간+달=우주인", "우주+인간=우주인",
+    "금속+번개=전기", "번개+기계=전기",
+    "전기+금속=배터리", "전기+항아리=배터리",
+    "전기+유리=전구", "전기+등불=전구", "유리+번개=전구",
+    "전기+소리=전화", "금속+소리=전화", "배터리+소리=전화",
+    "전기+음악=라디오", "전화+음악=라디오", "배터리+음악=라디오",
+    "라디오+그림=텔레비전", "전기+그림=텔레비전", "라디오+영화=텔레비전",
+    "돋보기+그림=카메라", "유리+그림=카메라",
+    "카메라+시간=영화", "카메라+책=영화", "카메라+음악=영화",
+    "전기+기계=컴퓨터", "기계+책=컴퓨터", "기계+글자=컴퓨터", "전기+도서관=컴퓨터",
+    "컴퓨터+컴퓨터=인터넷", "도서관+컴퓨터=인터넷", "컴퓨터+인공위성=인터넷",
+    "전화+컴퓨터=스마트폰", "전화+인터넷=스마트폰", "카메라+전화=스마트폰",
+    "컴퓨터+아이=게임", "스마트폰+아이=게임", "텔레비전+컴퓨터=게임",
+    "기계+컴퓨터=로봇", "기계+인간=로봇", "기계+생명=로봇",
+    "로봇+컴퓨터=인공지능", "인터넷+로봇=인공지능", "컴퓨터+학자=인공지능", "로봇+책=인공지능",
+    // 전설,
+    "뱀+구름=용", "도마뱀+불=용", "공룡+하늘=용",
+    "도구+밤=도깨비", "불+밤=도깨비", "숲+밤=도깨비",
+    "물고기+사랑=인어", "물고기+음악=인어",
+    "인간+안개=유령", "집+밤=유령",
+    "인간+산=거인", "생명+돌=거인",
+    "꽃+사랑=요정", "숲+사랑=요정", "꽃+마법=요정", "꽃+별=요정",
+    "책+별=마법", "에너지+책=마법", "별+에너지=마법",
+    "인간+마법=마법사", "노인+마법=마법사", "학자+마법=마법사"
   ];
 
   var BASE = ["불", "물", "흙", "공기"];
@@ -563,9 +901,22 @@ button.slot:hover { border-color: var(--bench-muted); }
 
   /* ---------- 상태 ---------- */
   var STORE = "wonso-changsegi-v1";
-  var found, fresh, log, combos, hints, tab, hideDone;
+  var found, fresh, log, combos, hints, tab, hideDone, ach, stats;
   var soundOn = true, showCards = true;
+  var query = "";          // 검색어 (저장 안 함)
+  var achSel = null;       // 업적 패널에서 고른 업적
   var sel = [null, null];
+  // 빠른 조회용 캐시: found 가 바뀔 때마다 touchFound() 로 비운다.
+  var FOUND = Object.create(null), CAT_FOUND = Object.create(null), doneCache = Object.create(null);
+  function touchFound() {
+    FOUND = Object.create(null);
+    found.forEach(function (n) { FOUND[n] = true; });
+    CAT_FOUND = Object.create(null);
+    CAT_ORDER.forEach(function (c) { CAT_FOUND[c] = 0; });
+    found.forEach(function (n) { CAT_FOUND[EL[n].cat]++; });
+    doneCache = Object.create(null);
+  }
+  function freshStats() { return { fails: 0, streak: 0, best: 0, self: 0, alt: 0, same: 0 }; }
   var result = null;      // { type: "new" | "known" | "alt" | "fail", name }
   var hint = null;        // { a, b, r, stage }
   var flashHint = [], flashTimer = null;
@@ -578,13 +929,16 @@ button.slot:hover { border-color: var(--bench-muted); }
     hints = 0;
     tab = "all";
     hideDone = false;
+    ach = [];
+    stats = freshStats();
     sel = [null, null];
     result = null;
     hint = null;
     flashHint = [];
+    touchFound();
   }
   function serialize() {
-    return { found: found, fresh: fresh, log: log, combos: combos, hints: hints, hideDone: hideDone, sound: soundOn, cards: showCards };
+    return { found: found, fresh: fresh, log: log, combos: combos, hints: hints, hideDone: hideDone, sound: soundOn, cards: showCards, ach: ach, stats: stats };
   }
   function list(v) { return Array.isArray(v) ? v : []; }
   function apply(data) {
@@ -596,6 +950,7 @@ button.slot:hover { border-color: var(--bench-muted); }
     var ok = data.found.filter(function (n) { return own(EL, n); });
     BASE.forEach(function (b) { if (ok.indexOf(b) < 0) ok.unshift(b); });
     found = ok.filter(function (n, i) { return ok.indexOf(n) === i; });
+    touchFound();
     fresh = list(data.fresh).filter(function (n) { return own(EL, n) && isFound(n) && USES[n].length > 0; });
     log = list(data.log).filter(function (e) {
       return e && typeof e === "object" && own(EL, e.a) && own(EL, e.b) && own(EL, e.r);
@@ -610,7 +965,17 @@ button.slot:hover { border-color: var(--bench-muted); }
     var h = Number(data.hints);
     hints = isFinite(h) && h > 0 ? Math.min(Math.floor(h), 99999) : 0;
     hideDone = data.hideDone === true;
+    var st = data.stats && typeof data.stats === "object" ? data.stats : {};
+    stats = freshStats();
+    Object.keys(stats).forEach(function (k) {
+      var v = Number(st[k]);
+      stats[k] = isFinite(v) && v > 0 ? Math.min(Math.floor(v), 999999) : 0;
+    });
+    ach = list(data.ach).filter(function (id) { return own(ACH_BY, id); });
+    ach = ach.filter(function (id, i) { return ach.indexOf(id) === i; });
     pruneFresh();
+    // 예전 저장 기록에서 이어올 때, 이미 달성한 조건은 조용히 인정한다.
+    checkAch(true);
   }
   function save() {
     try { localStorage.setItem(STORE, JSON.stringify(serialize())); } catch (e) { /* 저장 불가 환경 */ }
@@ -624,15 +989,78 @@ button.slot:hover { border-color: var(--bench-muted); }
     apply(data);
   }
 
-  function isFound(n) { return found.indexOf(n) >= 0; }
+  function isFound(n) { return FOUND[n] === true; }
   function isDone(n) {
-    return USES[n].every(function (k) { return isFound(REC[k]); });
+    var d = doneCache[n];
+    if (d === undefined) {
+      d = doneCache[n] = USES[n].every(function (k) { return isFound(REC[k]); });
+    }
+    return d;
   }
-  function catFound(c) { return found.filter(function (n) { return EL[n].cat === c; }).length; }
+  function catFound(c) { return CAT_FOUND[c] || 0; }
   function pruneFresh() { fresh = fresh.filter(function (n) { return !isDone(n); }); }
   function allFound() { return found.length === TOTAL; }
   function reduceMotion() {
     try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; }
+  }
+
+  /* ---------- 업적 ---------- */
+  // test() 는 현재 상태만 보고 참/거짓을 돌려준다. 한 번 달성하면 ach 에 남는다.
+  var ACH = [
+    { id: "first", emoji: "✨", name: "첫 창조", desc: "새 원소를 처음 발견하기", test: function () { return found.length > BASE.length; } },
+    { id: "f10", emoji: "🔟", name: "열 개의 세계", desc: "원소 10개 발견", test: function () { return found.length >= 10; } },
+    { id: "f30", emoji: "🌱", name: "서른 걸음", desc: "원소 30개 발견", test: function () { return found.length >= 30; } },
+    { id: "f60", emoji: "🏗️", name: "예순 개의 조각", desc: "원소 60개 발견", test: function () { return found.length >= 60; } },
+    { id: "f100", emoji: "💯", name: "백 개의 원소", desc: "원소 100개 발견", test: function () { return found.length >= 100; } },
+    { id: "f150", emoji: "🌍", name: "세상의 절반 너머", desc: "원소 150개 발견", test: function () { return found.length >= 150; } },
+    { id: "all", emoji: "👑", name: "완성된 세상", desc: "모든 원소 발견", test: function () { return allFound(); } },
+    { id: "cats", emoji: "🗂️", name: "탐험가", desc: "모든 분류 열기", test: function () { return CAT_ORDER.every(function (c) { return catFound(c) > 0; }); } },
+    { id: "catdone", emoji: "🏁", name: "한 분류 완성", desc: "어느 한 분류의 원소를 전부 발견", test: function () { return CAT_ORDER.some(function (c) { return catFound(c) === CAT_TOTAL[c]; }); } },
+    { id: "food", emoji: "🍽️", name: "풍년", desc: "음식 분류 전부 발견", test: function () { return catFound("food") === CAT_TOTAL.food; } },
+    { id: "myth", emoji: "📜", name: "전설 수집가", desc: "전설 분류 전부 발견", test: function () { return catFound("myth") === CAT_TOTAL.myth; } },
+    { id: "alt10", emoji: "🔀", name: "다른 길", desc: "새로운 조합 10개 찾기", test: function () { return stats.alt >= 10; } },
+    { id: "alt50", emoji: "🧭", name: "길잡이", desc: "새로운 조합 50개 찾기", test: function () { return stats.alt >= 50; } },
+    { id: "allrec", emoji: "📚", name: "백과사전", desc: "모든 레시피 찾기", test: function () { return combos.length >= RECIPE_LIST.length; } },
+    { id: "self20", emoji: "🧠", name: "독학", desc: "힌트 없이 20개 발견", test: function () { return stats.self >= 20; } },
+    { id: "fail50", emoji: "💪", name: "끈기", desc: "50번 실패해도 포기하지 않기", test: function () { return stats.fails >= 50; } },
+    { id: "streak10", emoji: "🎯", name: "직감", desc: "실패 없이 연속 10개 발견", test: function () { return stats.best >= 10; } },
+    { id: "same5", emoji: "🪞", name: "쌍둥이", desc: "같은 원소 둘을 섞어 5번 발견", test: function () { return stats.same >= 5; } },
+    { id: "human", emoji: "🧑", name: "인류의 새벽", desc: "인간 발견", test: function () { return isFound("인간"); } },
+    { id: "kimchi", emoji: "🥬", name: "한국의 맛", desc: "김치 발견", test: function () { return isFound("김치"); } },
+    { id: "dragon", emoji: "🐉", name: "전설의 시작", desc: "용 발견", test: function () { return isFound("용"); } },
+    { id: "moon", emoji: "🧑‍🚀", name: "달에 첫 발자국", desc: "우주인 발견", test: function () { return isFound("우주인"); } },
+    { id: "light", emoji: "💡", name: "밤을 밝히다", desc: "등불·전구·불꽃놀이 모두 발견", test: function () { return isFound("등불") && isFound("전구") && isFound("불꽃놀이"); } },
+    { id: "ai", emoji: "🤖", name: "가장 먼 발명", desc: "인공지능 발견", test: function () { return isFound("인공지능"); } }
+  ];
+  var ACH_BY = Object.create(null);
+  ACH.forEach(function (a) { ACH_BY[a.id] = a; });
+  var toastQueue = [], toastTimer = null;
+  // 새로 달성한 업적 목록을 돌려준다. quiet 면 알림 없이 기록만.
+  function checkAch(quiet) {
+    var got = [];
+    ACH.forEach(function (a) {
+      if (ach.indexOf(a.id) >= 0) return;
+      var ok = false;
+      try { ok = !!a.test(); } catch (e) { ok = false; }
+      if (ok) { ach.push(a.id); got.push(a); }
+    });
+    if (got.length && !quiet) {
+      got.forEach(function (a) { toastQueue.push(a); });
+      if (!toastTimer) nextToast();
+    }
+    return got;
+  }
+  function nextToast() {
+    var a = toastQueue.shift();
+    var t = $("toast");
+    if (!a) { toastTimer = null; t.classList.remove("show"); return; }
+    t.innerHTML = '<span class="emo" aria-hidden="true">' + a.emoji + '</span><div><b>업적 달성</b><span>' + esc(a.name) + "</span></div>";
+    t.classList.add("show");
+    sfx("ach");
+    toastTimer = setTimeout(function () {
+      t.classList.remove("show");
+      toastTimer = setTimeout(nextToast, 350);
+    }, 2600);
   }
 
   /* ---------- 사운드 (Web Audio로 직접 합성) ---------- */
@@ -710,7 +1138,8 @@ button.slot:hover { border-color: var(--bench-muted); }
       [392, 523.25, 659.25, 783.99, 1046.5, 1318.5, 1568].forEach(function (f, i) { bell(c, f, i * 0.11, 1.4, 0.12); });
       [1046.5, 1318.5, 1568, 2093].forEach(function (f) { bell(c, f, 0.95, 1.8, 0.07); });
     },
-    hint: function (c) { [1568, 2093, 2637].forEach(function (f, i) { note(c, f, i * 0.06, 0.25, "sine", 0.07); }); }
+    hint: function (c) { [1568, 2093, 2637].forEach(function (f, i) { note(c, f, i * 0.06, 0.25, "sine", 0.07); }); },
+    ach: function (c) { [783.99, 987.77, 1174.7, 1568].forEach(function (f, i) { bell(c, f, i * 0.09, 0.5, 0.1); }); }
   };
   function sfx(name) {
     var c = audio();
@@ -725,7 +1154,8 @@ button.slot:hover { border-color: var(--bench-muted); }
     tabs: $("tabs"), shelf: $("shelf"), hideDone: $("hideDone"), showCards: $("showCards"), log: $("log"), cats: $("cats"),
     foundCount: $("foundCount"), totalCount: $("totalCount"), progressBar: $("progressBar"), progressLabel: $("progressLabel"),
     hintBtn: $("hintBtn"), hintStat: $("hintStat"), reveal: $("reveal"), soundBtn: $("soundBtn"), soundLabel: $("soundLabel"),
-    resetBtn: $("resetBtn"), resetConfirm: $("resetConfirm")
+    resetBtn: $("resetBtn"), resetConfirm: $("resetConfirm"), search: $("search"),
+    achGrid: $("achGrid"), achCount: $("achCount"), achDetail: $("achDetail")
   };
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function emo(n) { return '<span class="emo" aria-hidden="true">' + EL[n].emoji + "</span>"; }
@@ -737,6 +1167,7 @@ button.slot:hover { border-color: var(--bench-muted); }
     if (!a || a === document.body || !a.getAttribute) return null;
     if (a.getAttribute("data-n")) return '.tile[data-n="' + a.getAttribute("data-n") + '"]';
     if (a.getAttribute("data-tab")) return '.tab[data-tab="' + a.getAttribute("data-tab") + '"]';
+    if (a.getAttribute("data-ach")) return '.ach[data-ach="' + a.getAttribute("data-ach") + '"]';
     if (a.id) return "#" + a.id;
     return null;
   }
@@ -832,6 +1263,7 @@ button.slot:hover { border-color: var(--bench-muted); }
   }
 
   function visible(n) {
+    if (query && n.indexOf(query) < 0) return false;
     if (!hideDone || !isDone(n)) return true;
     return sel.indexOf(n) >= 0 || fresh.indexOf(n) >= 0 || flashHint.indexOf(n) >= 0;
   }
@@ -851,10 +1283,43 @@ button.slot:hover { border-color: var(--bench-muted); }
         ' <span class="n">' + catFound(c) + "/" + CAT_TOTAL[c] + "</span></h3>";
       var body = items.length
         ? '<div class="grid">' + items.map(tileHTML).join("") + "</div>"
-        : '<p class="empty">이 분류의 원소는 모두 다 썼어요. "다 쓴 원소 숨기기"를 끄면 다시 보여요.</p>';
+        : '<p class="empty">' + (query ? "이 분류에는 찾는 원소가 없어요." : '이 분류의 원소는 모두 다 썼어요. "다 쓴 원소 숨기기"를 끄면 다시 보여요.') + "</p>";
       html += '<div class="group">' + head + body + "</div>";
     });
-    els.shelf.innerHTML = html || '<p class="empty">모든 원소를 다 썼어요. "다 쓴 원소 숨기기"를 끄면 다시 보여요.</p>';
+    var none = query ? '<p class="empty">"' + esc(query) + '" 에 맞는 원소가 아직 없어요.</p>' : '<p class="empty">모든 원소를 다 썼어요. "다 쓴 원소 숨기기"를 끄면 다시 보여요.</p>';
+    els.shelf.innerHTML = html || none;
+  }
+  // 재료를 고를 때는 선반을 다시 그리지 않고 바뀐 타일만 손본다.
+  function patchTiles() {
+    Array.prototype.forEach.call(els.shelf.querySelectorAll(".tile"), function (t) {
+      var n = t.getAttribute("data-n");
+      var picked = !result && sel.indexOf(n) >= 0;
+      t.classList.toggle("picked", picked);
+      t.setAttribute("aria-pressed", String(picked));
+      if (fresh.indexOf(n) < 0) {
+        var d = t.querySelector(".dot");
+        if (d) d.remove();
+      }
+    });
+  }
+
+  function renderAch() {
+    var on = 0;
+    els.achGrid.innerHTML = ACH.map(function (a) {
+      var got = ach.indexOf(a.id) >= 0;
+      if (got) on++;
+      return '<button class="ach' + (got ? " on" : "") + '" type="button" data-ach="' + a.id + '" aria-pressed="' + (achSel === a.id) + '"' +
+        ' aria-label="' + esc(a.name) + (got ? ", 달성" : ", 미달성") + '">' +
+        '<span class="emo" aria-hidden="true">' + a.emoji + "</span></button>";
+    }).join("");
+    els.achCount.textContent = on + "/" + ACH.length;
+    var a = achSel && ACH_BY[achSel];
+    if (a) {
+      var got = ach.indexOf(a.id) >= 0;
+      els.achDetail.innerHTML = "<b>" + esc(a.name) + "</b> · " + esc(a.desc) + (got ? ' <span class="on">달성</span>' : "");
+    } else {
+      els.achDetail.textContent = on === ACH.length ? "모든 업적을 달성했어요!" : "업적을 누르면 조건이 보여요.";
+    }
   }
 
   function renderSide() {
@@ -884,6 +1349,7 @@ button.slot:hover { border-color: var(--bench-muted); }
     renderTabs();
     renderShelf();
     renderSide();
+    renderAch();
     restoreFocus(key);
   }
 
@@ -907,7 +1373,9 @@ button.slot:hover { border-color: var(--bench-muted); }
     } else {
       sfx("pick");
       setMsg(pickMsg());
-      render();
+      renderBench();
+      patchTiles();
+      if (fi >= 0) renderTabs();
       save();
     }
   }
@@ -918,6 +1386,8 @@ button.slot:hover { border-color: var(--bench-muted); }
     var r = own(REC, k) ? REC[k] : null;
     if (!r) {
       result = { type: "fail", name: null };
+      stats.fails++;
+      stats.streak = 0;
       sfx("fail");
       setMsg("<b>" + esc(a) + "</b>" + (hasFinal(a) ? "과" : "와") + " <b>" + esc(b) + "</b>" + (hasFinal(b) ? "은" : "는") + " 섞이지 않아요. 다른 조합을 시도해 보세요.");
       els.bench.classList.remove("shake");
@@ -926,6 +1396,7 @@ button.slot:hover { border-color: var(--bench-muted); }
     } else if (isFound(r)) {
       if (combos.indexOf(k) < 0) {
         combos.push(k);
+        stats.alt++;
         result = { type: "alt", name: r };
         sfx("alt");
         setMsg("새로운 조합! <b>" + esc(josa(r, "을", "를")) + "</b> 만드는 다른 방법을 찾았어요.", true);
@@ -936,13 +1407,19 @@ button.slot:hover { border-color: var(--bench-muted); }
       }
     } else {
       var newCat = catFound(EL[r].cat) === 0;
+      var hinted = !!(hint && hint.r === r);
       found.push(r);
+      touchFound();
       combos.push(k);
       fresh.push(r);
       pruneFresh();
       log.push({ a: a, b: b, r: r });
       if (log.length > 40) log.shift();
-      if (hint && hint.r === r) hint = null;
+      if (hinted) hint = null;
+      stats.streak++;
+      if (stats.streak > stats.best) stats.best = stats.streak;
+      if (!hinted) stats.self++;
+      if (a === b) stats.same++;
       result = { type: "new", name: r };
       var ending = allFound() || r === FINAL;
       sfx(ending ? "finale" : (newCat ? "unlock" : "discover"));
@@ -955,7 +1432,15 @@ button.slot:hover { border-color: var(--bench-muted); }
       }
       if (showCards || newCat || ending) showReveal(a, b, r, newCat);
     }
-    render();
+    checkAch(false);
+    if (result.type === "new") {
+      render();
+    } else {
+      // 실패·아는 조합은 선반 내용이 안 바뀌므로 작업대와 선택 표시만 손본다.
+      renderBench();
+      patchTiles();
+      renderAch();
+    }
     save();
   }
 
@@ -1081,6 +1566,19 @@ button.slot:hover { border-color: var(--bench-muted); }
     showCards = els.showCards.checked;
     save();
   });
+  els.search.addEventListener("input", function () {
+    query = els.search.value.trim();
+    renderShelf();
+  });
+  els.achGrid.addEventListener("click", function (ev) {
+    var b = ev.target.closest(".ach");
+    if (!b) return;
+    var id = b.getAttribute("data-ach");
+    achSel = achSel === id ? null : id;
+    sfx("tab");
+    renderAch();
+    restoreFocus('.ach[data-ach="' + id + '"]');
+  });
   els.slotA.addEventListener("click", function () { removeSlot(0); });
   els.slotB.addEventListener("click", function () { removeSlot(1); });
   $("clearBtn").addEventListener("click", clearBench);
@@ -1100,11 +1598,15 @@ button.slot:hover { border-color: var(--bench-muted); }
     if (ev.key !== "Escape" || ev.repeat) return;
     if (!els.reveal.hidden) closeReveal();
     else if (!els.resetConfirm.hidden) hideConfirm();
+    else if (query && document.activeElement === els.search) { els.search.value = ""; query = ""; renderShelf(); }
   });
   els.resetBtn.addEventListener("click", function () { els.resetConfirm.hidden = false; $("resetNo").focus(); });
   $("resetNo").addEventListener("click", hideConfirm);
   $("resetYes").addEventListener("click", function () {
     resetState();
+    achSel = null;
+    els.search.value = "";
+    query = "";
     save();
     setMsg("새로운 세상이 시작됐어요. 원소 두 개를 차례로 눌러 섞어보세요.");
     render();
